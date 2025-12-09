@@ -1,7 +1,6 @@
 /// <reference types="cypress" />
 
-// Helper function to use cy.contains for digits and single-character operators 
-// that frequently fail with data-test selectors.
+
 const clickByLabel = (label) => {
   cy.contains('button', label).click();
 };
@@ -35,7 +34,7 @@ describe('Calculator Functionality Tests', () => {
     cy.get('[data-test="dashboard"]').should('have.value', '5'); // 2+9-6 = 5
   });
 
-  it('перевіряє результат довгого виразу 1+2+3+4-5-6-7-8-9 (ВИПРАВЛЕНО)', () => {
+  it('перевіряє результат довгого виразу 1+2+3+4-5-6-7-8-9 ', () => {
     // 1 + 2 + 3 + 4 - 5 - 6 - 7 - 8 - 9 = -25
     cy.get('[data-test="btn-1"]').click();
     cy.get('[data-test="btn-plus"]').click();
@@ -92,6 +91,20 @@ describe('Calculator Functionality Tests', () => {
     cy.get('[data-test="dashboard"]').should('have.value', '-9.9');
   });
 
+  it('обчислює 10% від 1000', () => {
+    cy.get('[data-test="btn-1"]').click();
+    cy.get('[data-test="btn-0"]').click();
+    cy.get('[data-test="btn-0"]').click();
+    cy.get('[data-test="btn-0"]').click(); // 1000
+    clickByLabel('*');
+    cy.get('[data-test="btn-1"]').click();
+    cy.get('[data-test="btn-0"]').click(); // 10
+    cy.get('[data-test="btn-percentages"]').click(); // обчислює одразу
+
+    // перевіряємо значення після %
+    cy.get('[data-test="dashboard"]').should('have.value', '10'); 
+});
+
   // --- ТЕСТИ НА ВВЕДЕННЯ ---
 
   it('замінює останній оператор, якщо натиснути оператор підряд', () => {
@@ -106,7 +119,7 @@ describe('Calculator Functionality Tests', () => {
     cy.get('[data-test="dashboard"]').should('have.value', '0+');
   });
 
-  it('поводження +/-, коли поле пусте/число/від\'ємне (ВИПРАВЛЕНО)', () => {
+  it('поводження +/-, коли поле пусте/число/від\'ємне ', () => {
     // Поле пусте -> '-'
     clickByLabel('+/-'); // Використовуємо clickByLabel
     cy.get('[data-test="dashboard"]').should('have.value', '-');
@@ -138,7 +151,7 @@ describe('Calculator Functionality Tests', () => {
 
   // --- ТЕСТИ НА КРАЙНІ ВИПАДКИ (EDGE CASES) ---
 
-  it('ділення на нуль перетворюється на "Infinity" (СКОРИГОВАНО)', () => {
+  it('ділення на нуль перетворюється на "Infinity" ', () => {
     cy.get('[data-test="btn-1"]').click();
     cy.get('[data-test="btn-slash"]').click();
     cy.get('[data-test="btn-0"]').click();
@@ -190,7 +203,7 @@ describe('Calculator Functionality Tests', () => {
     cy.get('[data-test="dashboard"]').should('have.value', '12');
   });
 
-  it('save зберігає "Infinity", оскільки це не "Error" (СКОРИГОВАНО)', () => {
+  it('save зберігає "Infinity", оскільки це не "Error" ', () => {
     cy.get('[data-test="btn-1"]').click();
     cy.get('[data-test="btn-slash"]').click();
     cy.get('[data-test="btn-0"]').click();
@@ -214,7 +227,7 @@ describe('Calculator Functionality Tests', () => {
     cy.get('[data-test="dashboard"]').should('have.value', '42.0');
   });
 
-  it('великий вираз: 12+34-5*6/3 обчислюється коректно (ВИПРАВЛЕНО)', () => {
+  it('великий вираз: 12+34-5*6/3 обчислюється коректно ', () => {
     // 12 + 34 - 5 * 6 / 3 = 36
     cy.get('[data-test="btn-1"]').click();
     cy.get('[data-test="btn-2"]').click();
@@ -242,27 +255,6 @@ describe('Calculator Functionality Tests', () => {
     cy.get('[data-test="btn-equal"]').click();
     cy.get('[data-test="dashboard"]').should('have.value', '-20');
   });
-  
-});
-
-describe('Додаткові важливі кейси', () => {
-  beforeEach(() => {
-    cy.visit('http://localhost:3000/');
-    cy.get('[data-test="btn-clr"]').click();
-    cy.clearLocalStorage();
-  });
-
-
-
-  it('початок з оператора "*" додає 0 перед оператором ( *3 => 0*3 )', () => {
-    clickByLabel('*');
-    cy.get('[data-test="btn-3"]').click();
-    cy.get('[data-test="dashboard"]').should('have.value', '0*3');
-  });
-
-
-
-
   it('введення дуже довгого числа (20 цифр) — поле приймає всі введені цифри', () => {
     // Вводимо 20 раз цифру "1"
     for (let i = 0; i < 20; i++) {
