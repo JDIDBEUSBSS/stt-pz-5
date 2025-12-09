@@ -55,6 +55,6 @@ function save() {
 function paste() {
   printDigit(localStorage.getItem('result'))
 }
-
+// 1111
 
 setTheme('theme-one');
